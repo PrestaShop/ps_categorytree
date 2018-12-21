@@ -151,7 +151,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             'link' => $link,
             'name' => $name,
             'desc' => $desc,
-            'children' => $children
+            'children' => $children,
         ];
     }
 
@@ -161,7 +161,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             'form' => [
                 'legend' => [
                     'title' => $this->getTranslator()->trans('Settings', [], 'Admin.Global'),
-                    'icon' => 'icon-cogs'
+                    'icon' => 'icon-cogs',
                 ],
                 'input' => [
                     [
@@ -173,24 +173,24 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                             [
                                 'id' => 'home',
                                 'value' => 0,
-                                'label' => $this->getTranslator()->trans('Home category', [], 'Modules.Categorytree.Admin')
+                                'label' => $this->getTranslator()->trans('Home category', [], 'Modules.Categorytree.Admin'),
                             ],
                             [
                                 'id' => 'current',
                                 'value' => 1,
-                                'label' => $this->getTranslator()->trans('Current category', [], 'Modules.Categorytree.Admin')
+                                'label' => $this->getTranslator()->trans('Current category', [], 'Modules.Categorytree.Admin'),
                             ],
                             [
                                 'id' => 'parent',
                                 'value' => 2,
-                                'label' => $this->getTranslator()->trans('Parent category', [], 'Modules.Categorytree.Admin')
+                                'label' => $this->getTranslator()->trans('Parent category', [], 'Modules.Categorytree.Admin'),
                             ],
                             [
                                 'id' => 'current_parent',
                                 'value' => 3,
-                                'label' => $this->getTranslator()->trans('Current category, unless it has no subcategories, in which case the parent category of the current category is used', [], 'Modules.Categorytree.Admin')
+                                'label' => $this->getTranslator()->trans('Current category, unless it has no subcategories, in which case the parent category of the current category is used', [], 'Modules.Categorytree.Admin'),
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'type' => 'text',
@@ -206,14 +206,14 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                             [
                                 'id' => 'name',
                                 'value' => 1,
-                                'label' => $this->getTranslator()->trans('By name', [], 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('By name', [], 'Admin.Global'),
                             ],
                             [
                                 'id' => 'position',
                                 'value' => 0,
-                                'label' => $this->getTranslator()->trans('By position', [], 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('By position', [], 'Admin.Global'),
                             ],
-                        ]
+                        ],
                     ],
                     [
                         'type' => 'radio',
@@ -223,19 +223,19 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                             [
                                 'id' => 'name',
                                 'value' => 1,
-                                'label' => $this->getTranslator()->trans('Descending', [], 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('Descending', [], 'Admin.Global'),
                             ],
                             [
                                 'id' => 'position',
                                 'value' => 0,
-                                'label' => $this->getTranslator()->trans('Ascending', [], 'Admin.Global')
+                                'label' => $this->getTranslator()->trans('Ascending', [], 'Admin.Global'),
                             ],
-                        ]
+                        ],
                     ],
                 ],
                 'submit' => [
                     'title' => $this->getTranslator()->trans('Save', [], 'Admin.Actions'),
-                ]
+                ],
             ],
         ];
 
@@ -246,7 +246,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->tpl_vars = [
-            'fields_value' => $this->getConfigFieldsValues()
+            'fields_value' => $this->getConfigFieldsValues(),
         ];
 
         return $helper->generateForm([$fields_form]);
@@ -258,7 +258,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             'BLOCK_CATEG_MAX_DEPTH' => Tools::getValue('BLOCK_CATEG_MAX_DEPTH', Configuration::get('BLOCK_CATEG_MAX_DEPTH')),
             'BLOCK_CATEG_SORT_WAY' => Tools::getValue('BLOCK_CATEG_SORT_WAY', Configuration::get('BLOCK_CATEG_SORT_WAY')),
             'BLOCK_CATEG_SORT' => Tools::getValue('BLOCK_CATEG_SORT', Configuration::get('BLOCK_CATEG_SORT')),
-            'BLOCK_CATEG_ROOT_CATEGORY' => Tools::getValue('BLOCK_CATEG_ROOT_CATEGORY', Configuration::get('BLOCK_CATEG_ROOT_CATEGORY'))
+            'BLOCK_CATEG_ROOT_CATEGORY' => Tools::getValue('BLOCK_CATEG_ROOT_CATEGORY', Configuration::get('BLOCK_CATEG_ROOT_CATEGORY')),
         ];
     }
 
