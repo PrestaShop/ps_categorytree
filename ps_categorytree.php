@@ -24,7 +24,7 @@
 *  International Registered Trademark & Property of PrestaShop SA
 */
 
-if (!defined('_PS_VERSION_')) {
+if ( ! defined('_PS_VERSION_')) {
     exit;
 }
 
@@ -57,9 +57,9 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
     public function uninstall()
     {
-        if (!parent::uninstall() ||
-            !Configuration::deleteByName('BLOCK_CATEG_MAX_DEPTH') ||
-            !Configuration::deleteByName('BLOCK_CATEG_ROOT_CATEGORY')) {
+        if ( ! parent::uninstall() ||
+            ! Configuration::deleteByName('BLOCK_CATEG_MAX_DEPTH') ||
+            ! Configuration::deleteByName('BLOCK_CATEG_ROOT_CATEGORY')) {
             return false;
         }
         return true;
@@ -265,9 +265,9 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         if (method_exists($this->context->controller, 'getCategory') && ($category = $this->context->controller->getCategory())) {
             $this->context->cookie->last_visited_category = $category->id;
         } elseif (method_exists($this->context->controller, 'getProduct') && ($product = $this->context->controller->getProduct())) {
-            if (!isset($this->context->cookie->last_visited_category)
-                || !Product::idIsOnCategoryId($product->id, [['id_category' => $this->context->cookie->last_visited_category]])
-                || !Category::inShopStatic($this->context->cookie->last_visited_category, $this->context->shop)
+            if ( ! isset($this->context->cookie->last_visited_category)
+                || ! Product::idIsOnCategoryId($product->id, [['id_category' => $this->context->cookie->last_visited_category]])
+                || ! Category::inShopStatic($this->context->cookie->last_visited_category, $this->context->shop)
             ) {
                 $this->context->cookie->last_visited_category = (int)$product->id_category_default;
             }
@@ -288,9 +288,9 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
         if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') && isset($this->context->cookie->last_visited_category) && $this->context->cookie->last_visited_category) {
             $category = new Category($this->context->cookie->last_visited_category, $this->context->language->id);
-            if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == 2 && !$category->is_root_category && $category->id_parent) {
+            if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == 2 && ! $category->is_root_category && $category->id_parent) {
                 $category = new Category($category->id_parent, $this->context->language->id);
-            } elseif (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == 3 && !$category->is_root_category && !$category->getSubCategories($category->id, true)) {
+            } elseif (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == 3 && ! $category->is_root_category && ! $category->getSubCategories($category->id, true)) {
                 $category = new Category($category->id_parent, $this->context->language->id);
             }
         }
