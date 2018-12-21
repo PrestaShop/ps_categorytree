@@ -70,11 +70,11 @@ class Ps_CategoryTree extends Module implements WidgetInterface
     {
         $output = '';
         if (Tools::isSubmit('submitBlockCategories')) {
-            $maxDepth = (int)(Tools::getValue('BLOCK_CATEG_MAX_DEPTH'));
+            $maxDepth = (int) (Tools::getValue('BLOCK_CATEG_MAX_DEPTH'));
             if ($maxDepth < 0) {
                 $output .= $this->displayError($this->getTranslator()->trans('Maximum depth: Invalid number.', [], 'Admin.Notifications.Error'));
             } else {
-                Configuration::updateValue('BLOCK_CATEG_MAX_DEPTH', (int)$maxDepth);
+                Configuration::updateValue('BLOCK_CATEG_MAX_DEPTH', (int) $maxDepth);
                 Configuration::updateValue('BLOCK_CATEG_SORT_WAY', Tools::getValue('BLOCK_CATEG_SORT_WAY'));
                 Configuration::updateValue('BLOCK_CATEG_SORT', Tools::getValue('BLOCK_CATEG_SORT'));
                 Configuration::updateValue('BLOCK_CATEG_ROOT_CATEGORY', Tools::getValue('BLOCK_CATEG_ROOT_CATEGORY'));
@@ -96,7 +96,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             if ($maxdepth > 0) {
                 $maxdepth += $category->level_depth;
             }
-            $range = 'AND nleft >= '.(int)$category->nleft.' AND nright <= '.(int)$category->nright;
+            $range = 'AND nleft >= '.(int) $category->nleft.' AND nright <= '.(int) $category->nright;
         }
 
         $resultIds = [];
@@ -104,16 +104,16 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 			SELECT c.id_parent, c.id_category, cl.name, cl.description, cl.link_rewrite
 			FROM `'._DB_PREFIX_.'category` c
-			INNER JOIN `'._DB_PREFIX_.'category_lang` cl ON (c.`id_category` = cl.`id_category` AND cl.`id_lang` = '.(int)$this->context->language->id.Shop::addSqlRestrictionOnLang('cl').')
-			INNER JOIN `'._DB_PREFIX_.'category_shop` cs ON (cs.`id_category` = c.`id_category` AND cs.`id_shop` = '.(int)$this->context->shop->id.')
-			WHERE (c.`active` = 1 OR c.`id_category` = '.(int)Configuration::get('PS_HOME_CATEGORY').')
-			AND c.`id_category` != '.(int)Configuration::get('PS_ROOT_CATEGORY').'
-			'.((int)$maxdepth != 0 ? ' AND `level_depth` <= '.(int)$maxdepth : '').'
+			INNER JOIN `'._DB_PREFIX_.'category_lang` cl ON (c.`id_category` = cl.`id_category` AND cl.`id_lang` = '.(int) $this->context->language->id.Shop::addSqlRestrictionOnLang('cl').')
+			INNER JOIN `'._DB_PREFIX_.'category_shop` cs ON (cs.`id_category` = c.`id_category` AND cs.`id_shop` = '.(int) $this->context->shop->id.')
+			WHERE (c.`active` = 1 OR c.`id_category` = '.(int) Configuration::get('PS_HOME_CATEGORY').')
+			AND c.`id_category` != '.(int) Configuration::get('PS_ROOT_CATEGORY').'
+			'.((int) $maxdepth != 0 ? ' AND `level_depth` <= '.(int) $maxdepth : '').'
 			'.$range.'
 			AND c.id_category IN (
 				SELECT id_category
 				FROM `'._DB_PREFIX_.'category_group`
-				WHERE `id_group` IN ('.pSQL(implode(', ', Customer::getGroupsStatic((int)$this->context->customer->id))).')
+				WHERE `id_group` IN ('.pSQL(implode(', ', Customer::getGroupsStatic((int) $this->context->customer->id))).')
 			)
 			ORDER BY `level_depth` ASC, '.(Configuration::get('BLOCK_CATEG_SORT') ? 'cl.`name`' : 'cs.`position`').' '.(Configuration::get('BLOCK_CATEG_SORT_WAY') ? 'DESC' : 'ASC'));
         foreach ($result as &$row) {
@@ -271,7 +271,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                 || ! Product::idIsOnCategoryId($product->id, [['id_category' => $this->context->cookie->last_visited_category]])
                 || ! Category::inShopStatic($this->context->cookie->last_visited_category, $this->context->shop)
             ) {
-                $this->context->cookie->last_visited_category = (int)$product->id_category_default;
+                $this->context->cookie->last_visited_category = (int) $product->id_category_default;
             }
         }
     }
@@ -286,7 +286,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
     public function getWidgetVariables($hookName = null, array $configuration = [])
     {
-        $category = new Category((int)Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
+        $category = new Category((int) Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
 
         if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') && isset($this->context->cookie->last_visited_category) && $this->context->cookie->last_visited_category) {
             $category = new Category($this->context->cookie->last_visited_category, $this->context->language->id);
