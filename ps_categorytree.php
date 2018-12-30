@@ -81,10 +81,10 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
                 //$this->_clearBlockcategoriesCache();
 
-                Tools::redirectAdmin(AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite('AdminModules').'&conf=6');
+                Tools::redirectAdmin(AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules') . '&conf=6');
             }
         }
-        return $output.$this->renderForm();
+        return $output . $this->renderForm();
     }
 
     private function getCategories($category)
@@ -95,26 +95,26 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             if ($maxdepth > 0) {
                 $maxdepth += $category->level_depth;
             }
-            $range = 'AND nleft >= '.(int)$category->nleft.' AND nright <= '.(int)$category->nright;
+            $range = 'AND nleft >= ' . (int)$category->nleft . ' AND nright <= ' . (int)$category->nright;
         }
 
         $resultIds = array();
         $resultParents = array();
         $result = Db::getInstance(_PS_USE_SQL_SLAVE_)->executeS('
 			SELECT c.id_parent, c.id_category, cl.name, cl.description, cl.link_rewrite
-			FROM `'._DB_PREFIX_.'category` c
-			INNER JOIN `'._DB_PREFIX_.'category_lang` cl ON (c.`id_category` = cl.`id_category` AND cl.`id_lang` = '.(int)$this->context->language->id.Shop::addSqlRestrictionOnLang('cl').')
-			INNER JOIN `'._DB_PREFIX_.'category_shop` cs ON (cs.`id_category` = c.`id_category` AND cs.`id_shop` = '.(int)$this->context->shop->id.')
-			WHERE (c.`active` = 1 OR c.`id_category` = '.(int)Configuration::get('PS_HOME_CATEGORY').')
-			AND c.`id_category` != '.(int)Configuration::get('PS_ROOT_CATEGORY').'
-			'.((int)$maxdepth != 0 ? ' AND `level_depth` <= '.(int)$maxdepth : '').'
-			'.$range.'
+			FROM `' . _DB_PREFIX_ . 'category` c
+			INNER JOIN `' . _DB_PREFIX_ . 'category_lang` cl ON (c.`id_category` = cl.`id_category` AND cl.`id_lang` = ' . (int)$this->context->language->id . Shop::addSqlRestrictionOnLang('cl') . ')
+			INNER JOIN `' . _DB_PREFIX_ . 'category_shop` cs ON (cs.`id_category` = c.`id_category` AND cs.`id_shop` = ' . (int)$this->context->shop->id . ')
+			WHERE (c.`active` = 1 OR c.`id_category` = ' . (int)Configuration::get('PS_HOME_CATEGORY') . ')
+			AND c.`id_category` != ' . (int)Configuration::get('PS_ROOT_CATEGORY') . '
+			' . ((int)$maxdepth != 0 ? ' AND `level_depth` <= ' . (int)$maxdepth : '') . '
+			' . $range . '
 			AND c.id_category IN (
 				SELECT id_category
-				FROM `'._DB_PREFIX_.'category_group`
-				WHERE `id_group` IN ('.pSQL(implode(', ', Customer::getGroupsStatic((int)$this->context->customer->id))).')
+				FROM `' . _DB_PREFIX_ . 'category_group`
+				WHERE `id_group` IN (' . pSQL(implode(', ', Customer::getGroupsStatic((int)$this->context->customer->id))) . ')
 			)
-			ORDER BY `level_depth` ASC, '.(Configuration::get('BLOCK_CATEG_SORT') ? 'cl.`name`' : 'cs.`position`').' '.(Configuration::get('BLOCK_CATEG_SORT_WAY') ? 'DESC' : 'ASC'));
+			ORDER BY `level_depth` ASC, ' . (Configuration::get('BLOCK_CATEG_SORT') ? 'cl.`name`' : 'cs.`position`') . ' ' . (Configuration::get('BLOCK_CATEG_SORT_WAY') ? 'DESC' : 'ASC'));
         foreach ($result as &$row) {
             $resultParents[$row['id_parent']][] = &$row;
             $resultIds[$row['id_category']] = &$row;
@@ -242,7 +242,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         $helper->show_toolbar = false;
         $helper->table = $this->table;
         $helper->submit_action = 'submitBlockCategories';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false).'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->tpl_vars = array(
             'fields_value' => $this->getConfigFieldsValues()
