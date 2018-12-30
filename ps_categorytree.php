@@ -63,6 +63,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             !Configuration::deleteByName('BLOCK_CATEG_ROOT_CATEGORY')) {
             return false;
         }
+
         return true;
     }
 
@@ -84,6 +85,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                 Tools::redirectAdmin(AdminController::$currentIndex.'&configure='.$this->name.'&token='.Tools::getAdminTokenLite('AdminModules').'&conf=6');
             }
         }
+
         return $output.$this->renderForm();
     }
 
