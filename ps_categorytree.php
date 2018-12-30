@@ -52,8 +52,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         return parent::install()
             && Configuration::updateValue('BLOCK_CATEG_MAX_DEPTH', 4)
             && Configuration::updateValue('BLOCK_CATEG_ROOT_CATEGORY', 1)
-            && $this->registerHook('displayLeftColumn')
-        ;
+            && $this->registerHook('displayLeftColumn');
     }
 
     public function uninstall()
