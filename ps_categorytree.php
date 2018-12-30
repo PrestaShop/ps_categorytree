@@ -149,7 +149,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             'id' => $id_category,
             'link' => $link,
             'name' => $name,
-            'desc'=> $desc,
+            'desc' => $desc,
             'children' => $children
         ];
     }
