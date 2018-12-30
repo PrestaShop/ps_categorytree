@@ -125,7 +125,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
     public function getTree($resultParents, $resultIds, $maxDepth, $id_category = null, $currentDepth = 0)
     {
-        if (is_null($id_category)) {
+        if (null === $id_category) {
             $id_category = $this->context->shop->getCategory();
         }
 
