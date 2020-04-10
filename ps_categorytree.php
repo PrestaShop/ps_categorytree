@@ -87,7 +87,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         return $output.$this->renderForm();
     }
 
-    private function getCategories($category)
+    protected function getCategories($category)
     {
         $range = '';
         $maxdepth = Configuration::get('BLOCK_CATEG_MAX_DEPTH');
