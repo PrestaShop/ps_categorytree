@@ -1,2 +1,4 @@
-/config_*.xml
-/translations/*.php
+config_*.xml
+translations/
+vendor/
+.php_cs.cache
