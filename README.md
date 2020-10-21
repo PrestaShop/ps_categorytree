@@ -2,7 +2,7 @@
 
 ## About
 
-Adds a block featuring product categories.
+Help navigation on your store, show your visitors current category and subcategories.
 
 ## Reporting issues
 
