@@ -42,7 +42,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         parent::__construct();
 
         $this->displayName = $this->getTranslator()->trans('Category tree links', [], 'Modules.Categorytree.Admin');
-        $this->description = $this->getTranslator()->trans('Adds a block featuring product categories.', [], 'Modules.Categorytree.Admin');
+        $this->description = $this->getTranslator()->trans('Help navigation on your store, show your visitors current category and subcategories.', [], 'Modules.Categorytree.Admin');
         $this->ps_versions_compliancy = ['min' => '1.7.1.0', 'max' => _PS_VERSION_];
     }
 
