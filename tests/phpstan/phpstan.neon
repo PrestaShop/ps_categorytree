@@ -1,0 +1,15 @@
+includes:
+	- %currentWorkingDirectory%/vendor/prestashop/php-dev-tools/phpstan/ps-module-extension.neon
+
+parameters:
+  paths:
+    # From PHPStan 0.12, paths to check are relative to the neon file
+    - ../../ps_categorytree.php
+  ignoreErrors:
+    - '#Access to an undefined property Cookie::\$last_visited_category.#'
+    - '#Parameter \#1 \$idCategory of class Category constructor expects null, int given.#'
+    - '#Parameter \#1 \$idCategory of class Category constructor expects null, mixed given.#'
+    - '#Parameter \#1 \$idCategory of class Category constructor expects null, int<1, max>|int<min, -1> given.#'
+    - '#Call to method assign\(\) on an unknown class Smarty_Data#'
+  reportUnmatchedIgnoredErrors: false
+  level: 5
