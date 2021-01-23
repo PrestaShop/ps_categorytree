@@ -116,9 +116,9 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 				WHERE `id_group` IN (' . pSQL(implode(', ', Customer::getGroupsStatic((int) $this->context->customer->id))) . ')
 			)
 			ORDER BY `level_depth` ASC, ' . (Configuration::get('BLOCK_CATEG_SORT') ? 'cl.`name`' : 'cs.`position`') . ' ' . (Configuration::get('BLOCK_CATEG_SORT_WAY') ? 'DESC' : 'ASC'));
-        foreach ($result as &$row) {
-            $resultParents[$row['id_parent']][] = &$row;
-            $resultIds[$row['id_category']] = &$row;
+        foreach ($result as $row) {
+            $resultParents[$row['id_parent']][] = $row;
+            $resultIds[$row['id_category']] = $row;
         }
 
         return $this->getTree($resultParents, $resultIds, $maxdepth, ($category ? $category->id : null));
