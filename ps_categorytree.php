@@ -221,12 +221,12 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                         'name' => 'BLOCK_CATEG_SORT_WAY',
                         'values' => [
                             [
-                                'id' => 'name',
+                                'id' => 'desc',
                                 'value' => 1,
                                 'label' => $this->getTranslator()->trans('Descending', [], 'Admin.Global'),
                             ],
                             [
-                                'id' => 'position',
+                                'id' => 'asc',
                                 'value' => 0,
                                 'label' => $this->getTranslator()->trans('Ascending', [], 'Admin.Global'),
                             ],
