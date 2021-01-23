@@ -51,6 +51,8 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         return parent::install()
             && Configuration::updateValue('BLOCK_CATEG_MAX_DEPTH', 4)
             && Configuration::updateValue('BLOCK_CATEG_ROOT_CATEGORY', 1)
+            && Configuration::updateValue('BLOCK_CATEG_SORT', 0)
+            && Configuration::updateValue('BLOCK_CATEG_SORT_WAY', 0)
             && $this->registerHook('displayLeftColumn')
         ;
     }
@@ -59,7 +61,9 @@ class Ps_CategoryTree extends Module implements WidgetInterface
     {
         if (!parent::uninstall() ||
             !Configuration::deleteByName('BLOCK_CATEG_MAX_DEPTH') ||
-            !Configuration::deleteByName('BLOCK_CATEG_ROOT_CATEGORY')) {
+            !Configuration::deleteByName('BLOCK_CATEG_ROOT_CATEGORY') ||
+            !Configuration::deleteByName('BLOCK_CATEG_SORT') ||
+            !Configuration::deleteByName('BLOCK_CATEG_SORT_WAY')) {
             return false;
         }
 
