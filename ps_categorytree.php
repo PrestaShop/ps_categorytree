@@ -31,11 +31,16 @@ use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class Ps_CategoryTree extends Module implements WidgetInterface
 {
+    /**
+     * @var string Name of the module running on PS 1.6.x. Used for data migration.
+     */
+    const PS_16_EQUIVALENT_MODULE = 'blockcategories';
+
     public function __construct()
     {
         $this->name = 'ps_categorytree';
         $this->tab = 'front_office_features';
-        $this->version = '2.0.1';
+        $this->version = '2.0.2';
         $this->author = 'PrestaShop';
 
         $this->bootstrap = true;
@@ -48,11 +53,37 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
     public function install()
     {
+        // If the PS 1.6 module wasn't here, set the default values
+        if (!$this->uninstallPrestaShop16Module()) {
+            Configuration::updateValue('BLOCK_CATEG_MAX_DEPTH', 4);
+            Configuration::updateValue('BLOCK_CATEG_ROOT_CATEGORY', 1);
+        }
+
         return parent::install()
-            && Configuration::updateValue('BLOCK_CATEG_MAX_DEPTH', 4)
-            && Configuration::updateValue('BLOCK_CATEG_ROOT_CATEGORY', 1)
             && $this->registerHook('displayLeftColumn')
         ;
+    }
+
+    /**
+     * Migrate data from 1.6 equivalent module (if applicable), then uninstall
+     */
+    public function uninstallPrestaShop16Module()
+    {
+        if (!Module::isInstalled(self::PS_16_EQUIVALENT_MODULE)) {
+            return false;
+        }
+        $oldModule = Module::getInstanceByName(self::PS_16_EQUIVALENT_MODULE);
+        if ($oldModule) {
+            // This closure calls the parent class to prevent data to be erased
+            // It allows the new module to be configured without migration
+            $parentUninstallClosure = function () {
+                return parent::uninstall();
+            };
+            $parentUninstallClosure = $parentUninstallClosure->bindTo($oldModule, get_class($oldModule));
+            $parentUninstallClosure();
+        }
+
+        return true;
     }
 
     public function uninstall()
