@@ -40,7 +40,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
     {
         $this->name = 'ps_categorytree';
         $this->tab = 'front_office_features';
-        $this->version = '2.0.1';
+        $this->version = '2.0.2';
         $this->author = 'PrestaShop';
 
         $this->bootstrap = true;
@@ -76,12 +76,13 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         if ($oldModule) {
             // This closure calls the parent class to prevent data to be erased
             // It allows the new module to be configured without migration
-            $parentUninstallClosure = function() {
+            $parentUninstallClosure = function () {
                 return parent::uninstall();
             };
             $parentUninstallClosure = $parentUninstallClosure->bindTo($oldModule, get_class($oldModule));
             $parentUninstallClosure();
         }
+
         return true;
     }
 
