@@ -271,6 +271,24 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                             ],
                         ],
                     ],
+                    [
+                        'type' => 'switch',
+                        'label' => $this->trans('Show number of products', [], 'Admin.Global'),
+                        'name' => 'BLOCK_CATEG_SHOW_NUMB_PRODS',
+                        'values' => [
+                            [
+                                'id' => 'BLOCK_CATEG_SHOW_NUMB_PRODS_on',
+                                'value' => 1,
+                                'label' => $this->trans('Yes', [], 'Admin.Global'),
+                            ],
+                            [
+                                'id' => 'BLOCK_CATEG_SHOW_NUMB_PRODS_off',
+                                'value' => 0,
+                                'label' => $this->trans('No', [], 'Admin.Global'),
+                            ],
+                        ],
+                        'desc' => $this->trans('It shows the number of products of each category after its name in side panel.', [], 'Admin.Shipping.Help'),
+                    ],
                 ],
                 'submit' => [
                     'title' => $this->getTranslator()->trans('Save', [], 'Admin.Actions'),
