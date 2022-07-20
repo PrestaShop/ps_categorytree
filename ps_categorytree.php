@@ -109,7 +109,8 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                 Configuration::updateValue('BLOCK_CATEG_SORT_WAY', Tools::getValue('BLOCK_CATEG_SORT_WAY'));
                 Configuration::updateValue('BLOCK_CATEG_SORT', Tools::getValue('BLOCK_CATEG_SORT'));
                 Configuration::updateValue('BLOCK_CATEG_ROOT_CATEGORY', Tools::getValue('BLOCK_CATEG_ROOT_CATEGORY'));
-
+                Configuration::updateValue('BLOCK_CATEG_SHOW_NUMB_PRODS', Tools::getValue('BLOCK_CATEG_SHOW_NUMB_PRODS'));
+                
                 //$this->_clearBlockcategoriesCache();
 
                 Tools::redirectAdmin(AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules') . '&conf=6');
@@ -177,21 +178,26 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             $link = $name = $desc = '';
         }
 
-        return [
+        $return = [
             'id' => $id_category,
             'link' => $link,
             'name' => $name,
             'desc' => $desc,
             'children' => $children,
-            'numberOfProducts' => (new Category($id_category))->getProducts(
+        ];
+
+        if(Configuration::get('BLOCK_CATEG_SHOW_NUMB_PRODS') == 1){
+            $return['numberOfProducts'] = (new Category($id_category))->getProducts(
                 $this->context->language->id,
                 1,
                 999999999,
                 null,
                 null,
                 true
-            ),
-        ];
+            );
+        }
+
+        return $return;
     }
 
     public function renderForm()
@@ -316,6 +322,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             'BLOCK_CATEG_SORT_WAY' => Tools::getValue('BLOCK_CATEG_SORT_WAY', Configuration::get('BLOCK_CATEG_SORT_WAY')),
             'BLOCK_CATEG_SORT' => Tools::getValue('BLOCK_CATEG_SORT', Configuration::get('BLOCK_CATEG_SORT')),
             'BLOCK_CATEG_ROOT_CATEGORY' => Tools::getValue('BLOCK_CATEG_ROOT_CATEGORY', Configuration::get('BLOCK_CATEG_ROOT_CATEGORY')),
+            'BLOCK_CATEG_SHOW_NUMB_PRODS' => Tools::getValue('BLOCK_CATEG_ROOT_CATEGORY', Configuration::get('BLOCK_CATEG_SHOW_NUMB_PRODS')),
         ];
     }
 
