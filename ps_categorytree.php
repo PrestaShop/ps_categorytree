@@ -186,7 +186,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             'children' => $children,
         ];
 
-        if(Configuration::get('BLOCK_CATEG_SHOW_NUMB_PRODS') == 1){
+        if ((bool) Configuration::get('BLOCK_CATEG_SHOW_NUMB_PRODS')) {
             $return['numberOfProducts'] = (new Category($id_category))->getProducts(
                 $this->context->language->id,
                 1,
