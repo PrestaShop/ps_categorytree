@@ -29,7 +29,7 @@
       <ul>
         {foreach from=$nodes item=node}
           <li>
-            <a href="{$node.link}">{$node.name}</a>
+            <a href="{$node.link}">{$node.name} ({$node.numberOfProducts})</a>
             <div>
               {categories nodes=$node.children depth=$depth+1}
             </div>
@@ -42,7 +42,7 @@
 
 <div class="category-tree">
   <ul>
-    <li><a href="{$categories.link nofilter}">{$categories.name}</a></li>
+    <li><a href="{$categories.link nofilter}">{$categories.name} ({$categories.numberOfProducts})</a></li>
     {if !empty($categories.children)}
       <li>{categories nodes=$categories.children}</li>
     {/if}

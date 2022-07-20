@@ -183,6 +183,14 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             'name' => $name,
             'desc' => $desc,
             'children' => $children,
+            'numberOfProducts' => (new Category($id_category))->getProducts(
+                $this->context->language->id,
+                1,
+                999999999,
+                null,
+                null,
+                true
+            ),
         ];
     }
 
@@ -262,6 +270,24 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                                 'label' => $this->getTranslator()->trans('Ascending', [], 'Admin.Global'),
                             ],
                         ],
+                    ],
+                    [
+                        'type' => 'switch',
+                        'label' => $this->trans('Show number of products', [], 'Admin.Global'),
+                        'name' => 'BLOCK_CATEG_SHOW_NUMB_PRODS',
+                        'values' => [
+                            [
+                                'id' => 'BLOCK_CATEG_SHOW_NUMB_PRODS_on',
+                                'value' => 1,
+                                'label' => $this->trans('Yes', [], 'Admin.Global'),
+                            ],
+                            [
+                                'id' => 'BLOCK_CATEG_SHOW_NUMB_PRODS_off',
+                                'value' => 0,
+                                'label' => $this->trans('No', [], 'Admin.Global'),
+                            ],
+                        ],
+                        'desc' => $this->trans('It shows the number of products of each category after its name in side panel.', [], 'Admin.Shipping.Help'),
                     ],
                 ],
                 'submit' => [
