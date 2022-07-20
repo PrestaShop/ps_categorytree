@@ -183,6 +183,14 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             'name' => $name,
             'desc' => $desc,
             'children' => $children,
+            'numberOfProducts' => (new Category($id_category))->getProducts(
+                $this->context->language->id,
+                1,
+                999999999,
+                null,
+                null,
+                true
+            ),
         ];
     }
 
