@@ -36,11 +36,31 @@ class Ps_CategoryTree extends Module implements WidgetInterface
      */
     const PS_16_EQUIVALENT_MODULE = 'blockcategories';
 
+    /**
+     * @var int A way to display the category tree: Home category
+     */
+    const CATEGORY_ROOT_HOME = 0;
+
+    /**
+     * @var int A way to display the category tree: Current category
+     */
+    const CATEGORY_ROOT_CURRENT = 1;
+
+    /**
+     * @var int A way to display the category tree: Parent category
+     */
+    const CATEGORY_ROOT_PARENT = 2;
+
+    /**
+     * @var int A way to display the category tree: Current category and its parent (if exists)
+     */
+    const CATEGORY_ROOT_CURRENT_PARENT = 3;
+
     public function __construct()
     {
         $this->name = 'ps_categorytree';
         $this->tab = 'front_office_features';
-        $this->version = '2.0.2';
+        $this->version = '2.0.3';
         $this->author = 'PrestaShop';
 
         $this->bootstrap = true;
@@ -60,8 +80,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         }
 
         return parent::install()
-            && $this->registerHook('displayLeftColumn')
-        ;
+            && $this->registerHook('displayLeftColumn');
     }
 
     /**
@@ -109,8 +128,6 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                 Configuration::updateValue('BLOCK_CATEG_SORT_WAY', Tools::getValue('BLOCK_CATEG_SORT_WAY'));
                 Configuration::updateValue('BLOCK_CATEG_SORT', Tools::getValue('BLOCK_CATEG_SORT'));
                 Configuration::updateValue('BLOCK_CATEG_ROOT_CATEGORY', Tools::getValue('BLOCK_CATEG_ROOT_CATEGORY'));
-
-                //$this->_clearBlockcategoriesCache();
 
                 Tools::redirectAdmin(AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules') . '&conf=6');
             }
@@ -203,22 +220,22 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                         'values' => [
                             [
                                 'id' => 'home',
-                                'value' => 0,
+                                'value' => static::CATEGORY_ROOT_HOME,
                                 'label' => $this->getTranslator()->trans('Home category', [], 'Modules.Categorytree.Admin'),
                             ],
                             [
                                 'id' => 'current',
-                                'value' => 1,
+                                'value' => static::CATEGORY_ROOT_CURRENT,
                                 'label' => $this->getTranslator()->trans('Current category', [], 'Modules.Categorytree.Admin'),
                             ],
                             [
                                 'id' => 'parent',
-                                'value' => 2,
+                                'value' => static::CATEGORY_ROOT_PARENT,
                                 'label' => $this->getTranslator()->trans('Parent category', [], 'Modules.Categorytree.Admin'),
                             ],
                             [
                                 'id' => 'current_parent',
-                                'value' => 3,
+                                'value' => static::CATEGORY_ROOT_CURRENT_PARENT,
                                 'label' => $this->getTranslator()->trans('Current category, unless it has no subcategories, in which case the parent category of the current category is used', [], 'Modules.Categorytree.Admin'),
                             ],
                         ],
@@ -317,15 +334,16 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
     public function getWidgetVariables($hookName = null, array $configuration = [])
     {
-        $category = new Category((int) Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
-
-        if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') && isset($this->context->cookie->last_visited_category) && $this->context->cookie->last_visited_category) {
+        if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') && !empty($this->context->cookie->last_visited_category) && $this->context->controller instanceof CategoryController) {
             $category = new Category($this->context->cookie->last_visited_category, $this->context->language->id);
-            if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == 2 && !$category->is_root_category && $category->id_parent) {
-                $category = new Category($category->id_parent, $this->context->language->id);
-            } elseif (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == 3 && !$category->is_root_category && !$category->getSubCategories($category->id, true)) {
-                $category = new Category($category->id_parent, $this->context->language->id);
-            }
+        } else {
+            $category = new Category((int) Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
+        }
+
+        if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == static::CATEGORY_ROOT_PARENT && !$category->is_root_category && $category->id_parent) {
+            $category = new Category($category->id_parent, $this->context->language->id);
+        } elseif (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == static::CATEGORY_ROOT_CURRENT_PARENT && !$category->is_root_category && !$category->getSubCategories($category->id, true)) {
+            $category = new Category($category->id_parent, $this->context->language->id);
         }
 
         return [
