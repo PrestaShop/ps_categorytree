@@ -161,7 +161,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 			AND c.id_category IN (
 				SELECT id_category
 				FROM `' . _DB_PREFIX_ . 'category_group`
-				WHERE `id_group` IN (' . implode(', ', array_map('intval', Customer::getGroupsStatic((int) $this->context->customer->id))) . ')
+				WHERE `id_group` IN (' . implode(', ', Customer::getGroupsStatic((int) $this->context->customer->id)) . ')
 			)
 			ORDER BY `level_depth` ASC, ' . (Configuration::get('BLOCK_CATEG_SORT') ? 'cl.`name`' : 'cs.`position`') . ' ' . (Configuration::get('BLOCK_CATEG_SORT_WAY') ? 'DESC' : 'ASC'));
         foreach ($result as &$row) {
