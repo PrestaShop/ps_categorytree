@@ -238,6 +238,11 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                                 'value' => static::CATEGORY_ROOT_CURRENT_PARENT,
                                 'label' => $this->getTranslator()->trans('Current category, unless it has no subcategories, in which case the parent category of the current category is used', [], 'Modules.Categorytree.Admin'),
                             ],
+			    [
+                                'id' => 'category_depth_1',
+                                'value' => 4,
+                                'label' => $this->getTranslator()->trans('Categories at n+1 of the root category', [], 'Modules.Categorytree.Admin'),
+                            ],
                         ],
                     ],
                     [
@@ -344,7 +349,17 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             $category = new Category($category->id_parent, $this->context->language->id);
         } elseif (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == static::CATEGORY_ROOT_CURRENT_PARENT && !$category->is_root_category && !$category->getSubCategories($category->id, true)) {
             $category = new Category($category->id_parent, $this->context->language->id);
-        }
+        } elseif (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == 4) {
+                if ($category->level_depth < 2) {
+                    return [
+                        'categories' => $this->getCategories($category),
+                        'currentCategory' => $category->id,
+                    ];
+                }
+                while ($category->level_depth > 2) {
+                    $category = new Category($category->id_parent);
+                }
+            }
 
         return [
             'categories' => $this->getCategories($category),
