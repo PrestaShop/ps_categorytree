@@ -340,6 +340,27 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         return $this->fetch('module:ps_categorytree/views/templates/hook/ps_categorytree.tpl');
     }
 
+    protected function setBreadcrumbs(&$category, $current)
+    {
+        if ($category['id'] == $current->id) {
+            $category['breadcrumb'] = true;
+            $category['current'] = true;
+
+            return true;
+        }
+
+        foreach ($category['children'] as &$subcategory) {
+            $hasBreadcrumb = $this->setBreadcrumbs($subcategory, $current);
+            if ($hasBreadcrumb) {
+                $category['breadcrumb'] = true;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getWidgetVariables($hookName = null, array $configuration = [])
     {
         $homeCategory = new Category((int) Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
@@ -376,8 +397,14 @@ class Ps_CategoryTree extends Module implements WidgetInterface
             $rootCategory = $homeCategory;
         }
 
+        $categories = $this->getCategories($rootCategory);
+
+        if (Validate::isLoadedObject($currentCategory)) {
+            $this->setBreadcrumbs($categories, $currentCategory);
+        }
+
         return [
-            'categories' => $this->getCategories($rootCategory),
+            'categories' => $categories,
             'currentCategory' => $rootCategory->id,
         ];
     }
