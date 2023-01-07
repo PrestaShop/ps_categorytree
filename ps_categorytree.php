@@ -310,41 +310,59 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         ];
     }
 
-    public function setLastVisitedCategory()
-    {
-        if (method_exists($this->context->controller, 'getCategory') && ($category = $this->context->controller->getCategory())) {
-            $this->context->cookie->last_visited_category = $category->id;
-        } elseif (method_exists($this->context->controller, 'getProduct') && ($product = $this->context->controller->getProduct())) {
-            if (!isset($this->context->cookie->last_visited_category)
-                || !Product::idIsOnCategoryId($product->id, [['id_category' => $this->context->cookie->last_visited_category]])
-                || !Category::inShopStatic($this->context->cookie->last_visited_category, $this->context->shop)
-            ) {
-                $this->context->cookie->last_visited_category = (int) $product->id_category_default;
-            }
-        }
-    }
-
     public function renderWidget($hookName = null, array $configuration = [])
     {
-        $this->setLastVisitedCategory();
         $this->smarty->assign($this->getWidgetVariables($hookName, $configuration));
 
         return $this->fetch('module:ps_categorytree/views/templates/hook/ps_categorytree.tpl');
     }
 
-    public function getWidgetVariables($hookName = null, array $configuration = [])
+    public function getCategoryToUse()
     {
-        if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') && !empty($this->context->cookie->last_visited_category) && $this->context->controller instanceof CategoryController) {
-            $category = new Category($this->context->cookie->last_visited_category, $this->context->language->id);
-        } else {
-            $category = new Category((int) Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
+        $mode = Configuration::get('BLOCK_CATEG_ROOT_CATEGORY');
+
+        /*
+         * First, let's check if we can directly return home category.
+         *
+         * We will do it when:
+         * - Case CATEGORY_ROOT_HOME - always return home no matter what.
+         * - We are on other page than product or category
+         * - Category on the controller is null for some reason
+         */
+        if ($mode == static::CATEGORY_ROOT_HOME ||
+            (!$this->context->controller instanceof CategoryController && !$this->context->controller instanceof ProductController) ||
+            empty($this->context->controller->getCategory())
+        ) {
+            return new Category((int) Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
         }
 
-        if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == static::CATEGORY_ROOT_PARENT && !$category->is_root_category && $category->id_parent) {
-            $category = new Category($category->id_parent, $this->context->language->id);
-        } elseif (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == static::CATEGORY_ROOT_CURRENT_PARENT && !$category->is_root_category && !$category->getSubCategories($category->id, true)) {
+        // OK, let's get the current category if we have it available in the controller
+        $category = $this->context->controller->getCategory();
+
+        // In case of static::CATEGORY_ROOT_CURRENT, there is nothing to do.
+
+        /*
+         * Case CATEGORY_ROOT_PARENT - We want to always display the parent of current category.
+         * We must check that we actually have somewhere to go UP in the tree.
+         */
+        if ($mode == static::CATEGORY_ROOT_PARENT && !$category->is_root_category && $category->id_parent) {
             $category = new Category($category->id_parent, $this->context->language->id);
         }
+
+        /*
+         * Case CATEGORY_ROOT_CURRENT_PARENT - We want to display the current category, unless it's empty.
+         * We must check that we actually have somewhere to go UP in the tree AND if there are subcategories.
+         */
+        if ($mode == static::CATEGORY_ROOT_CURRENT_PARENT && !$category->is_root_category && !$category->getSubCategories($category->id, true)) {
+            $category = new Category($category->id_parent, $this->context->language->id);
+        }
+
+        return $category;
+    }
+
+    public function getWidgetVariables($hookName = null, array $configuration = [])
+    {
+        $category = $this->getCategoryToUse();
 
         return [
             'categories' => $this->getCategories($category),
