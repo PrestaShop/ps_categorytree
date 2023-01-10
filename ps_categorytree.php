@@ -136,42 +136,50 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         return $output . $this->renderForm();
     }
 
+    /**
+     * Format category into an array compatible with existing templates
+     */
+    private function formatCategory($category)
+    {
+        if (isset($category['children'])) {
+            $children = array_map([$this, 'formatCategory'], $category['children']);
+        } else {
+            $children = [];
+        }
+
+        return [
+            'id' => $category['id_category'],
+            'link' => $this->context->link->getCategoryLink($category['id_category'], $category['link_rewrite']),
+            'name' => $category['name'],
+            'desc' => $category['description'],
+            'children' => $children,
+        ];
+    }
+
     private function getCategories($category)
     {
-        $range = '';
+        $idCategory = null;
         $maxdepth = Configuration::get('BLOCK_CATEG_MAX_DEPTH');
         if (Validate::isLoadedObject($category)) {
+            $idCategory = $category->id;
             if ($maxdepth > 0) {
                 $maxdepth += $category->level_depth;
             }
-            $range = 'AND nleft >= ' . (int) $category->nleft . ' AND nright <= ' . (int) $category->nright;
         }
 
-        $resultIds = [];
-        $resultParents = [];
-        $result = Db::getInstance((bool) _PS_USE_SQL_SLAVE_)->executeS('
-			SELECT c.id_parent, c.id_category, cl.name, cl.description, cl.link_rewrite
-			FROM `' . _DB_PREFIX_ . 'category` c
-			INNER JOIN `' . _DB_PREFIX_ . 'category_lang` cl ON (c.`id_category` = cl.`id_category` AND cl.`id_lang` = ' . (int) $this->context->language->id . Shop::addSqlRestrictionOnLang('cl') . ')
-			INNER JOIN `' . _DB_PREFIX_ . 'category_shop` cs ON (cs.`id_category` = c.`id_category` AND cs.`id_shop` = ' . (int) $this->context->shop->id . ')
-			WHERE (c.`active` = 1 OR c.`id_category` = ' . (int) Configuration::get('PS_HOME_CATEGORY') . ')
-			AND c.`id_category` != ' . (int) Configuration::get('PS_ROOT_CATEGORY') . '
-			' . ((int) $maxdepth != 0 ? ' AND `level_depth` <= ' . (int) $maxdepth : '') . '
-			' . $range . '
-			AND c.id_category IN (
-				SELECT id_category
-				FROM `' . _DB_PREFIX_ . 'category_group`
-				WHERE `id_group` IN (' . implode(', ', Customer::getGroupsStatic((int) $this->context->customer->id)) . ')
-			)
-			ORDER BY `level_depth` ASC, ' . (Configuration::get('BLOCK_CATEG_SORT') ? 'cl.`name`' : 'cs.`position`') . ' ' . (Configuration::get('BLOCK_CATEG_SORT_WAY') ? 'DESC' : 'ASC'));
-        foreach ($result as &$row) {
-            $resultParents[$row['id_parent']][] = &$row;
-            $resultIds[$row['id_category']] = &$row;
-        }
+        $groups = Customer::getGroupsStatic((int) $this->context->customer->id);
+        $sqlFilter = $maxdepth ? 'AND c.`level_depth` <= ' . (int) $maxdepth : '';
+        $orderBy = ' ORDER BY c.`level_depth` ASC, ' . (Configuration::get('BLOCK_CATEG_SORT') ? 'cl.`name`' : 'category_shop.`position`') . ' ' . (Configuration::get('BLOCK_CATEG_SORT_WAY') ? 'DESC' : 'ASC');
+        $categories = Category::getNestedCategories($idCategory, $this->context->language->id, true, $groups, true, $sqlFilter, $orderBy);
 
-        return $this->getTree($resultParents, $resultIds, $maxdepth, ($category ? $category->id : null));
+        $categories = array_map([$this, 'formatCategory'], $categories);
+
+        return array_shift($categories);
     }
 
+    /**
+     * @deprecated 2.0.4
+     */
     public function getTree($resultParents, $resultIds, $maxDepth, $id_category = null, $currentDepth = 0)
     {
         if (is_null($id_category)) {
