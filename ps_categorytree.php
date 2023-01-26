@@ -342,21 +342,43 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
     public function getWidgetVariables($hookName = null, array $configuration = [])
     {
-        if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') && !empty($this->context->cookie->last_visited_category) && $this->context->controller instanceof CategoryController) {
-            $category = new Category($this->context->cookie->last_visited_category, $this->context->language->id);
+        $homeCategory = new Category((int) Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
+        if (method_exists($this->context->controller, 'getCategory')) {
+            $currentCategory = $this->context->controller->getCategory();
+            if (!Validate::isLoadedObject($currentCategory)) {
+                $currentCategory = false;
+            }
         } else {
-            $category = new Category((int) Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
+            $currentCategory = false;
         }
 
-        if (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == static::CATEGORY_ROOT_PARENT && !$category->is_root_category && $category->id_parent) {
-            $category = new Category($category->id_parent, $this->context->language->id);
-        } elseif (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY') == static::CATEGORY_ROOT_CURRENT_PARENT && !$category->is_root_category && !$category->getSubCategories($category->id, true)) {
-            $category = new Category($category->id_parent, $this->context->language->id);
+        switch (Configuration::get('BLOCK_CATEG_ROOT_CATEGORY')) {
+            case static::CATEGORY_ROOT_HOME:
+                $rootCategory = $homeCategory;
+                break;
+            case static::CATEGORY_ROOT_CURRENT:
+                $rootCategory = $currentCategory;
+                break;
+            case static::CATEGORY_ROOT_PARENT:
+                if ($currentCategory && !$currentCategory->is_root_category && $currentCategory->id_parent) {
+                    $rootCategory = new Category($currentCategory->id_parent, $this->context->language->id);
+                }
+                break;
+            case static::CATEGORY_ROOT_CURRENT_PARENT:
+                if ($currentCategory && !$currentCategory->is_root_category && !$currentCategory->getSubCategories($currentCategory->id, true)) {
+                    $rootCategory = new Category($currentCategory->id_parent, $this->context->language->id);
+                }
+                break;
+        }
+
+        /* Fallback if something went wrong */
+        if (empty($rootCategory)) {
+            $rootCategory = $homeCategory;
         }
 
         return [
-            'categories' => $this->getCategories($category),
-            'currentCategory' => $category->id,
+            'categories' => $this->getCategories($rootCategory),
+            'currentCategory' => $rootCategory->id,
         ];
     }
 }
