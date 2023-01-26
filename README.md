@@ -1,9 +1,9 @@
 # Category tree links
 
 [![PHP tests](https://github.com/PrestaShop/ps_categorytree/actions/workflows/php.yml/badge.svg)](https://github.com/PrestaShop/ps_categorytree/actions/workflows/php.yml)
-[![Latest Stable Version](https://poser.pugx.org/PrestaShop/ps_categorytree/v)](//packagist.org/packages/PrestaShop/autoupgrade)
-[![Total Downloads](https://poser.pugx.org/PrestaShop/ps_categorytree/downloads)](//packagist.org/packages/PrestaShop/autoupgrade)
-[![GitHub license](https://img.shields.io/github/license/PrestaShop/ps_categorytree)](https://github.com/PrestaShop/autoupgrade/LICENSE.md)
+[![Latest Stable Version](https://poser.pugx.org/PrestaShop/ps_categorytree/v)](//packagist.org/packages/PrestaShop/ps_categorytree)
+[![Total Downloads](https://poser.pugx.org/PrestaShop/ps_categorytree/downloads)](//packagist.org/packages/PrestaShop/ps_categorytree)
+[![GitHub license](https://img.shields.io/github/license/PrestaShop/ps_categorytree)](https://github.com/PrestaShop/ps_categorytree/LICENSE.md)
 
 ## About
 
