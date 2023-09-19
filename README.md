@@ -13,6 +13,14 @@ Help navigation on your store, show your visitors current category and subcatego
 
 PrestaShop: `1.7.1.0` or later
 
+## How to test
+
+Link to specs : https://docs.prestashop-project.org/functional-documentation/functional-documentation/ux-ui/back-office/improve/modules/category-tree-links-ps_categorytree
+
+Link to test scenario : https://build.prestashop-project.org/test-scenarios/scenarios/modules/ps-categorytree.html
+
+In BO > Modules , configure ps-categorytre module : Choose the Category , Set the maximum depth of category sublevels displayed in the bloc , Select an option of sort By (name / position) , Select an option of Sort order ( Descending /Ascending) , In FO, as a visitor verify that the current category and subcategories match the configurations in BO.
+
 ## Reporting issues
 
 You can report issues with this module in the main PrestaShop repository. [Click here to report an issue][report-issue]. 
