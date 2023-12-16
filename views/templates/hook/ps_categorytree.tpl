@@ -28,7 +28,7 @@
     {if $nodes|count}
       <ul>
         {foreach from=$nodes item=node}
-          <li>
+          <li{if !empty($node.current)} class="current"{/if}>
             <a href="{$node.link}">{$node.name}</a>
             <div>
               {categories nodes=$node.children depth=$depth+1}
