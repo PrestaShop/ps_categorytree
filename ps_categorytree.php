@@ -105,7 +105,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
     /**
      * Format category into an array compatible with existing templates.
      */
-    private function formatCategory($rawCategory, $idsOfCategoriesInPath)
+    private function formatCategory($rawCategory, $idsOfCategoriesInPath): array
     {
         $children = [];
         if (!empty($rawCategory['children'])) {
@@ -124,7 +124,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         ];
     }
 
-    private function getCategories($category)
+    private function getCategories($category): array
     {
         // Determine max depth to get categories
         $maxdepth = (int) Configuration::get('BLOCK_CATEG_MAX_DEPTH');
@@ -302,7 +302,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
      * In case of product controller, it's either the default category of the product, or the category the customer
      * came from. This is resolved by the ProductController.
      */
-    private function getCurrentCategory()
+    private function getCurrentCategory(): Category
     {
         /*
          * We check several things:
@@ -331,7 +331,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
      * - This category has a disabled parent
      * - This category is already the home category
      */
-    private function tryToGetParentCategoryIfAvailable($category)
+    private function tryToGetParentCategoryIfAvailable($category): Category
     {
         // If we are already on the top of the tree, nothing to do here
         if ($category->is_root_category || !$category->id_parent || $category->id == Configuration::get('PS_HOME_CATEGORY')) {
@@ -341,15 +341,21 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         // We try to load the parent
         $parentCategory = new Category($category->id_parent, $this->context->language->id);
 
-        // If it's disabled or the customer does not have access there, we load the next parent
-        if (!$parentCategory->active || !$category->checkAccess((int) $this->context->customer->id)) {
+        // If the parent is malfunctioned somehow, we can't do anything and we return the home category
+        if (!Validate::isLoadedObject($parentCategory)) {
+            return $this->getHomeCategory();
+        }
+
+        // Now we have a valid parent category, let's check it. It must be active, accessible and belong to the shop.
+        // Same conditions as in CategoryController. If it fails, we select the next parent.
+        if (!$parentCategory->active || !$category->checkAccess((int) $this->context->customer->id) || !$category->existsInShop($this->context->shop->id)) {
             return $this->tryToGetParentCategoryIfAvailable($parentCategory);
         }
 
         return $parentCategory;
     }
 
-    private function getIdsOfCategoriesInPathToCurrentCategory()
+    private function getIdsOfCategoriesInPathToCurrentCategory(): array
     {
         // Call built in method to retrieve all parents, including the current category
         $categories = $this->getCurrentCategory()->getParentsCategories();
@@ -357,7 +363,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         return array_column($categories, 'id_category');
     }
 
-    private function getHomeCategory()
+    private function getHomeCategory(): Category
     {
         return new Category((int) Configuration::get('PS_HOME_CATEGORY'), $this->context->language->id);
     }
