@@ -325,15 +325,28 @@ class Ps_CategoryTree extends Module implements WidgetInterface
     /*
      * Tries to get a parent of the current category.
      * If we are already on the top of the tree, it will return the input.
+     *
+     * Three cases can happen:
+     * - This category has a normal active parent
+     * - This category has a disabled parent
+     * - This category is already the home category
      */
     private function tryToGetParentCategoryIfAvailable($category)
     {
         // If we are already on the top of the tree, nothing to do here
-        if ($category->is_root_category || !$category->id_parent) {
+        if ($category->is_root_category || !$category->id_parent || $category->id == Configuration::get('PS_HOME_CATEGORY')) {
             return $category;
         }
 
-        return new Category($category->id_parent, $this->context->language->id);
+        // We try to load the parent
+        $parentCategory = new Category($category->id_parent, $this->context->language->id);
+
+        // If it's disabled or the customer does not have access there, we load the next parent
+        if (!$parentCategory->active || !$category->checkAccess((int) $this->context->customer->id)) {
+            return $this->tryToGetParentCategoryIfAvailable($parentCategory);
+        }
+
+        return $parentCategory;
     }
 
     private function getIdsOfCategoriesInPathToCurrentCategory()
