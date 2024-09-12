@@ -11,7 +11,7 @@ Help navigation on your store, show your visitors current category and subcatego
 
 ## Compatibility
 
-PrestaShop: `1.7.1.0` or later
+PrestaShop: `1.7.7.0` or later
 
 ## How to test
 
