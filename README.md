@@ -1,8 +1,25 @@
 # Category tree links
 
+[![PHP tests](https://github.com/PrestaShop/ps_categorytree/actions/workflows/php.yml/badge.svg)](https://github.com/PrestaShop/ps_categorytree/actions/workflows/php.yml)
+[![Latest Stable Version](https://poser.pugx.org/PrestaShop/ps_categorytree/v)](//packagist.org/packages/PrestaShop/ps_categorytree)
+[![Total Downloads](https://poser.pugx.org/PrestaShop/ps_categorytree/downloads)](//packagist.org/packages/PrestaShop/ps_categorytree)
+[![GitHub license](https://img.shields.io/github/license/PrestaShop/ps_categorytree)](https://github.com/PrestaShop/ps_categorytree/LICENSE.md)
+
 ## About
 
 Help navigation on your store, show your visitors current category and subcategories.
+
+## Compatibility
+
+PrestaShop: `1.7.7.0` or later
+
+## How to test
+
+Link to specs: https://docs.prestashop-project.org/functional-documentation/functional-documentation/ux-ui/back-office/improve/modules/category-tree-links-ps_categorytree
+
+Link to test scenario: https://build.prestashop-project.org/test-scenarios/scenarios/modules/ps-categorytree.html
+
+In `BO > Modules`, configure ps_categorytree module - choose a category, set the maximum depth of category sublevels displayed in the block, select an option of sort by (name/position), select an option of sort order (descending /ascending). In FO as a visitor, verify that the current category and subcategories match the configurations in BO.
 
 ## Reporting issues
 
@@ -26,6 +43,6 @@ Just make sure to follow our [contribution guidelines][contribution-guidelines].
 This module is released under the [Academic Free License 3.0][AFL-3.0] 
 
 [report-issue]: https://github.com/PrestaShop/PrestaShop/issues/new/choose
-[prestashop]: https://www.prestashop.com/
+[prestashop]: https://www.prestashop-project.org/
 [contribution-guidelines]: https://devdocs.prestashop.com/1.7/contribute/contribution-guidelines/project-modules/
 [AFL-3.0]: https://opensource.org/licenses/AFL-3.0
