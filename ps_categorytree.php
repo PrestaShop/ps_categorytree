@@ -139,6 +139,9 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
         // Retrieve them using the built in method
         $categories = Category::getNestedCategories($category->id, $this->context->language->id, true, $groups, true, $sqlFilter, $orderBy);
+        if (empty($categories)) {
+            return [];
+        }
 
         // Get path to current category so we can use it for marking
         $idsOfCategoriesInPath = $this->getIdsOfCategoriesInPathToCurrentCategory();
