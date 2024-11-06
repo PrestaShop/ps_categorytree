@@ -55,7 +55,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
     {
         $this->name = 'ps_categorytree';
         $this->tab = 'front_office_features';
-        $this->version = '3.0.0';
+        $this->version = '3.0.1';
         $this->author = 'PrestaShop';
 
         $this->bootstrap = true;
