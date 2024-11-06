@@ -2,7 +2,7 @@
 <module>
     <name>ps_categorytree</name>
     <displayName><![CDATA[Category tree links]]></displayName>
-    <version><![CDATA[3.0.0]]></version>
+    <version><![CDATA[3.0.1]]></version>
     <description><![CDATA[Help navigation on your store, show your visitors current category and subcategories.]]></description>
     <author><![CDATA[PrestaShop]]></author>
     <tab><![CDATA[front_office_features]]></tab>
