@@ -55,7 +55,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
     {
         $this->name = 'ps_categorytree';
         $this->tab = 'front_office_features';
-        $this->version = '3.0.0';
+        $this->version = '3.0.1';
         $this->author = 'PrestaShop';
 
         $this->bootstrap = true;
@@ -139,6 +139,9 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
         // Retrieve them using the built in method
         $categories = Category::getNestedCategories($category->id, $this->context->language->id, true, $groups, true, $sqlFilter, $orderBy);
+        if (empty($categories)) {
+            return [];
+        }
 
         // Get path to current category so we can use it for marking
         $idsOfCategoriesInPath = $this->getIdsOfCategoriesInPathToCurrentCategory();
