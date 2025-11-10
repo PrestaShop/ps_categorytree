@@ -55,7 +55,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
     {
         $this->name = 'ps_categorytree';
         $this->tab = 'front_office_features';
-        $this->version = '3.0.1';
+        $this->version = '3.0.2';
         $this->author = 'PrestaShop';
 
         $this->bootstrap = true;
@@ -95,7 +95,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
                 Configuration::updateValue('BLOCK_CATEG_SORT', Tools::getValue('BLOCK_CATEG_SORT'));
                 Configuration::updateValue('BLOCK_CATEG_ROOT_CATEGORY', Tools::getValue('BLOCK_CATEG_ROOT_CATEGORY'));
 
-                Tools::redirectAdmin(AdminController::$currentIndex . '&configure=' . $this->name . '&token=' . Tools::getAdminTokenLite('AdminModules') . '&conf=6');
+                Tools::redirectAdmin($this->context->link->getAdminLink('AdminModules', true, [], ['configure' => $this->name, 'conf' => 6]));
             }
         }
 
@@ -242,7 +242,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
         $helper->show_toolbar = false;
         $helper->table = $this->table;
         $helper->submit_action = 'submitBlockCategories';
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false, [], ['configure' => $this->name, 'tab_module' => $this->tab, 'module_name' => $this->name]);
         $helper->token = Tools::getAdminTokenLite('AdminModules');
         $helper->tpl_vars = [
             'fields_value' => $this->getConfigFieldsValues(),
