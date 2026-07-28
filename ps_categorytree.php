@@ -63,7 +63,7 @@ class Ps_CategoryTree extends Module implements WidgetInterface
 
         $this->displayName = $this->trans('Category tree links', [], 'Modules.Categorytree.Admin');
         $this->description = $this->trans('Help navigation on your store, show your visitors current category and subcategories.', [], 'Modules.Categorytree.Admin');
-        $this->ps_versions_compliancy = ['min' => '1.7.7.0', 'max' => _PS_VERSION_];
+        $this->ps_versions_compliancy = ['min' => '8.2.0', 'max' => _PS_VERSION_];
     }
 
     public function install()
