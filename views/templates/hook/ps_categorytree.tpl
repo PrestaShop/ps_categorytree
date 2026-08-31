@@ -31,7 +31,9 @@
           <li>
             <a href="{$node.link}">{$node.name}</a>
             <div>
-              {categories nodes=$node.children depth=$depth+1}
+              {if !empty($node.children)}
+                {categories nodes=$node.children depth=$depth+1}
+              {/if}
             </div>
           </li>
         {/foreach}
